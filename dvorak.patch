@@ -1,0 +1,22 @@
+0bf4:	keys	NONE	NONE	Delete	0xfc	F13	F14	F15	End
+0bfc:	keys	Grave	Tab	CapsLoc	102nd	Enter	F9	Esc	F12
+0c04:	keys	1	Apostro	A	Semicol	F7	F10	F1	NONE
+0c0c:	keys	2	Comma	O	Q	F8	F11	F2	Hanja
+0c14:	keys	3	Dot	E	J	RightBr	Equal	F3	KPDot
+0c1c:	keys	4	P	U	K	Backspa	Backsla	F4	KP0
+0c24:	keys	5	Y	I	X	Sleep	Yen	F5	Left
+0c2c:	keys	6	F	D	B	Home	Hangeul	Up	Down
+0c34:	keys	7	G	H	M	PageUp	PageDow	F6	Right
+0c3c:	keys	8	C	T	W	NumLock	KP7	KP4	KP1
+0c44:	keys	9	R	N	V	KPEqual	KP8	KP5	KP2
+0c4c:	keys	0	L	S	Z	KPSlash	KP9	KP6	KP3
+0c54:	keys	LeftBra	Slash	Minus	Space	KPAster KPMinus	KPPlus	KPEnter
+	; NONE	MediaBa	NONE	NONE	#~?	NONE	MediaSC	NONE
+	; NONE	NONE	NONE	MediaST	RO?	NONE	NONE	NONE
+	; MediaWW	NONE	NONE	NONE	NONE	NONE	MediaFI NONE
+	; NONE	NONE	MediaFO	NONE	NONE	MediaSC	NONE	NONE
+	; NONE	NONE	NONE	NONE	KP,	NONE	NONE	MediaED
+	; NONE	NONE	F19	F18	NONE	NONE	F17	F16
+
+; Eject? - Sends 1 byte meta flag
+; Fn - 0xfc?
