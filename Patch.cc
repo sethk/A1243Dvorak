@@ -82,7 +82,7 @@ FixCheckSum(HexFile &input)
 	for (u_char &ch : get<vector<u_char>>(record.data))
 		ch = 0x0;
 
-	if (!GenCheckSumRecord(record, record.length - 1, targetCheckSum))
+	if (!GenCheckSumRecord(record, 0, targetCheckSum))
 		throw runtime_error("Could not fix checksum");
 }
 

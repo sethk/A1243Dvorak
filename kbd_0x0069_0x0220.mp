@@ -291,6 +291,7 @@ Area                               Addr   Size   Decimal Bytes (Attributes)
        0056  _key_hist
        0076  _scanned_cols
        007a  _usb_key
+       007b  _cur_key
        007d  _scan_row
        007e  _scan_col_mask
        007f  _hist_index

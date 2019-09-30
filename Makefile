@@ -11,7 +11,8 @@ all: HIDFirmwareUpdaterTool.s \
     CheckSum \
     kbd_0x0069_0x0220.def.hex \
     kbd_0x0069_0x0220.def.keys \
-    dvorak.hex
+    dvorak.hex \
+    dvorak.keys
 
 HIDFirmwareUpdaterTool.s: HIDFirmwareUpdaterTool
 	otool -tV -arch i386 $< > $@ || rm -f $@
@@ -61,6 +62,9 @@ kbd_0x0069_0x0220.def.keys: kbd_0x0069_0x0220.def.hex FindKeys
 
 dvorak.hex: Patch dvorak.patch kbd_0x0069_0x0220.hex
 	./Patch dvorak.patch < kbd_0x0069_0x0220.hex > dvorak.hex || rm -f dvorak.hex
+
+dvorak.keys: dvorak.hex FindKeys
+	./FindKeys < $< > $@ || rm -f $@
 
 kbd_0x0069_0x0220.def.irrxfw: kbd_0x0069_0x0220.def.hex
 	./Codec < kbd_0x0069_0x0220.def.hex > kbd_0x0069_0x0220.def.irrxfw

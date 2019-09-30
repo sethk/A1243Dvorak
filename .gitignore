@@ -12,6 +12,7 @@ HIDFirmwareUpdaterTool.hacked.xxd
 Patch
 dvorak.hex
 dvorak.irrxfw
+dvorak.keys
 kbd_0x0069_0x0220.asm
 kbd_0x0069_0x0220.def.hex
 kbd_0x0069_0x0220.def.irrxfw
