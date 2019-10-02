@@ -23,8 +23,13 @@ main(void)
 			clog << "ch(" << ch << "), checkSum " << hex << checkSum << endl;
 	}
 
+	int status = 0;
 	clog << "CheckSum is " << hex << checkSum;
 	if (checkSum != 0x1057f8)
+	{
 		clog << " (discrepancy " << dec << (int)(checkSum - 0x1057f8) << ')';
+		status = 1;
+	}
 	clog << endl;
+	return status;
 }

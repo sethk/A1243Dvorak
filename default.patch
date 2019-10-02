@@ -4,19 +4,16 @@
 0c0c:	keys	2	W	S	X	F8	F11	F2	Hanja
 0c14:	keys	3	E	D	C	Equal	RightBr	F3	KPDot
 0c1c:	keys	4	R	F	V	Backspa	Backsla	F4	KP0
-0c24:	keys	5	T	G	B	Sleep	Yen	F5	Left
+0c24:	keys	5	T	G	B	0xf8	Yen	F5	Left
 0c2c:	keys	6	Y	H	N	Home	Hangeul	Up	Down
 0c34:	keys	7	U	J	M	PageUp	PageDow	F6	Right
 0c3c:	keys	8	I	K	Comma	NumLock	KP7	KP4	KP1
 0c44:	keys	9	O	L	Dot	KPEqual	KP8	KP5	KP2
 0c4c:	keys	0	P	Semicol	Slash	KPSlash	KP9	KP6	KP3
 0c54:	keys	Minus	LeftBra	Apostro	Space	KPAster KPMinus	KPPlus	KPEnter
-	; NONE	MediaBa	NONE	NONE	#~?	NONE	MediaSC	NONE
-	; NONE	NONE	NONE	MediaST	RO?	NONE	NONE	NONE
-	; MediaWW	NONE	NONE	NONE	NONE	NONE	MediaFI NONE
-	; NONE	NONE	MediaFO	NONE	NONE	MediaSC	NONE	NONE
-	; NONE	NONE	NONE	NONE	KP,	NONE	NONE	MediaED
-	; NONE	NONE	F19	F18	NONE	NONE	F17	F16
-
-; Eject? - Sends 1 byte meta flag
-; Fn - 0xfc?
+0c5c:	keys	NONE	LeftShi	NONE	NONE	HashTil	NONE	RightSh	NONE
+0c64:	keys	NONE	NONE	NONE	LeftMet	RO	NONE	NONE	NONE
+0c6c:	keys	LeftCtr	NONE	NONE	NONE	NONE	NONE	RightCt	NONE
+0c74:	keys	NONE	NONE	LeftAlt	NONE	NONE	RightAl	NONE	NONE
+0c7c:	keys	NONE	NONE	NONE	NONE	KPComma	NONE	NONE	RightMe
+0c84:	keys	NONE	NONE	F19	F18	NONE	NONE	F17	F16

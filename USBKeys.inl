@@ -5,6 +5,8 @@
 class USBKeys
 {
 public:
+	static bool verbose;
+
 	USBKeys()
 	{
 		std::ifstream hidKeysFile;
@@ -56,7 +58,8 @@ public:
 				//std::clog << keyName << scanCode << std::endl;
 				if (keyNames.find(keyName) != keyNames.end())
 				{
-					std::cerr << "Already have a name for " << keyName << ": " << std::hex << (u_int)keyNames.at(keyName) << std::endl;
+					if (verbose)
+						std::cerr << "Already have a name for " << keyName << ": " << std::hex << (u_int)keyNames.at(keyName) << std::endl;
 					continue;
 				}
 
@@ -72,3 +75,5 @@ public:
 	std::unordered_map<std::string, u_char> keyNames;
 	std::unordered_map<u_char, std::string> keyCodes;
 };
+
+bool USBKeys::verbose = false;

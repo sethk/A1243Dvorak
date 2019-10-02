@@ -12,9 +12,9 @@
 0c4c:	keys	0	L	S	Z	KPSlash	KP9	KP6	KP3
 0c54:	keys	LeftBra	Slash	Minus	Space	KPAster KPMinus	KPPlus	KPEnter
 0c5c:	keys	NONE	LeftShi	NONE	NONE	HashTil	NONE	RightSh	NONE
-0c64:	keys	NONE	NONE	NONE	LeftMet	RO	NONE	NONE	NONE
+0c64:	keys	NONE	NONE	NONE	LeftAlt	RO	NONE	NONE	NONE
 0c6c:	keys	CapsLoc	NONE	NONE	NONE	NONE	NONE	RightCt	NONE
-0c74:	keys	NONE	NONE	LeftAlt	NONE	NONE	RightAl	NONE	NONE
-0c7c:	keys	NONE	NONE	NONE	NONE	KPComma	NONE	NONE	RightMe
+0c74:	keys	NONE	NONE	LeftMet	NONE	NONE	RightMe	NONE	NONE
+0c7c:	keys	NONE	NONE	NONE	NONE	KPComma	NONE	NONE	RightAl
 0c84:	keys	NONE	NONE	F19	F18	NONE	NONE	F17	F16
 1fc0:	checksum

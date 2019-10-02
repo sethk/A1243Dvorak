@@ -13,6 +13,8 @@ Patch
 dvorak.hex
 dvorak.irrxfw
 dvorak.keys
+dvorak-win.hex
+dvorak-win.irrxfw
 kbd_0x0069_0x0220.asm
 kbd_0x0069_0x0220.def.hex
 kbd_0x0069_0x0220.def.irrxfw

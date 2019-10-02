@@ -32,11 +32,14 @@ T hexRead(istream &is, int &checkSum)
 int
 main(void)
 {
+	bool verbose = false;
+
 	ios_base::sync_with_stdio(false);
 	freopen(NULL, "rb", stdin);
 
 	USBKeys keys;
 
+	// TODO: Use HexFile.inl
 	u_int segmentStart = 0;
 	cin.exceptions(ifstream::failbit | ifstream::badbit);
 	while (cin)
@@ -52,7 +55,8 @@ main(void)
 		addr+= segmentStart;
 		u_char recType = hexRead<u_char>(cin, checkSum);
 
-		clog << "Record type " << (u_int)recType << " at " << addr << ", length " << (u_int)len << endl;
+		if (verbose)
+			clog << "Record type " << (u_int)recType << " at " << addr << ", length " << (u_int)len << endl;
 
 		switch (recType)
 		{
@@ -83,7 +87,8 @@ main(void)
 
 					++addr;
 				}
-				clog << endl;
+				if (verbose)
+					clog << endl;
 				break;
 
 			case 0x1:
@@ -91,7 +96,8 @@ main(void)
 
 			case 0x4:
 				segmentStart = hexRead<u_short>(cin, checkSum) << 8;
-				clog << "New segment start " << hex << setw(6) << segmentStart << endl;
+				if (verbose)
+					clog << "New segment start " << hex << setw(6) << segmentStart << endl;
 				break;
 
 			default:

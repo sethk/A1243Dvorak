@@ -18,18 +18,18 @@ ByteSum(const string &s)
 	return hexSum;
 }
 
-static const u_int checkSumAddress = 0x1fc0;
+//static const u_int checkSumAddress = 0x1fc0;
 
 static HexFile::Record &
-FindCheckSumRecord(HexFile &input)
+FindCheckSumRecord(HexFile &input, u_int address)
 {
 	for (auto &record : input.records)
 	{
-		if (record.address == checkSumAddress)
+		if (record.address == address)
 			return record;
 	}
 
-	throw runtime_error("Missing CheckSum record at address " + to_string(checkSumAddress));
+	throw runtime_error("Missing CheckSum record at address " + to_string(address));
 }
 
 static bool
@@ -57,7 +57,7 @@ GenCheckSumRecord(HexFile::Record &record, size_t byteIndex, int targetCheckSum)
 }
 
 static void
-FixCheckSum(HexFile &input)
+FixCheckSum(HexFile &input, u_int address)
 {
 	int diff;
 	{
@@ -70,8 +70,10 @@ FixCheckSum(HexFile &input)
 	if (diff == 0)
 		return;
 
+	clog << "Fixing checksum (difference " << diff << ")" << endl;
+
 	int targetCheckSum;
-	HexFile::Record &record = FindCheckSumRecord(input);
+	HexFile::Record &record = FindCheckSumRecord(input, address);
 	{
 		ostringstream oss;
 		oss << record;
@@ -82,13 +84,15 @@ FixCheckSum(HexFile &input)
 	for (u_char &ch : get<vector<u_char>>(record.data))
 		ch = 0x0;
 
-	if (!GenCheckSumRecord(record, 0, targetCheckSum))
+	if (!GenCheckSumRecord(record, record.length - 5, targetCheckSum))
 		throw runtime_error("Could not fix checksum");
 }
 
 int
 main(int ac, char *av[])
 {
+	bool verbose = false;
+
 	ios_base::sync_with_stdio(false);
 	freopen(NULL, "rb", stdin);
 
@@ -144,7 +148,11 @@ main(int ac, char *av[])
 					u_char scanCode;
 					auto scanKey = keys.keyNames.find(keyName);
 					if (scanKey != keys.keyNames.end())
+					{
 						scanCode = scanKey->second;
+						if (scanCode >= 0xe0 && scanCode < 0xe8)
+							scanCode+= 0x10;
+					}
 					else
 					{
 						try
@@ -163,7 +171,8 @@ main(int ac, char *av[])
 						}
 					}
 
-					clog << hex << address << ": " << keyName << endl;
+					if (verbose)
+						clog << hex << address << ": " << keyName << endl;
 
 					input[address] = scanCode;
 
@@ -173,6 +182,8 @@ main(int ac, char *av[])
 				if (!lineStream.eof())
 					throw runtime_error("Expected key name or hex code");
 			}
+			else if (directive == "checksum")
+				FixCheckSum(input, address);
 			else
 				throw runtime_error("Unrecognized directive "s + directive);
 		}
@@ -185,8 +196,6 @@ main(int ac, char *av[])
 
 	if (numErrors > 0)
 		return 1;
-
-	FixCheckSum(input);
 
 	cout << input;
 }
