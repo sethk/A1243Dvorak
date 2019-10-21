@@ -66,24 +66,28 @@ main(void)
 				for (auto i = 0; i < len; ++i)
 				{
 					u_char byte = hexRead<u_char>(cin, checkSum);
-					if (((i - startOffset) % bytesPerLine) == 0)
-						cout << endl << hex << setw(4) << setfill('0') << addr << ':';
 
-					u_char scanCode = byte;
-					char leftDelim = '(', rightDelim = ')';
-					if (scanCode >= 0xe0)
+					if (addr >= 0xbf4 && addr < 0xc8c)
 					{
-						leftDelim = '<';
-						rightDelim = '>';
-						scanCode-= 0x10;
+						if (((i - startOffset) % bytesPerLine) == 0)
+							cout << endl << hex << setw(4) << setfill('0') << addr << ':';
+
+						u_char scanCode = byte;
+						char leftDelim = '(', rightDelim = ')';
+						if (scanCode >= 0xe0)
+						{
+							leftDelim = '<';
+							rightDelim = '>';
+							scanCode-= 0x10;
+						}
+
+						auto keyName = keys.keyCodes.find(scanCode);
+
+						cout << ' '
+								<< leftDelim << setw(USBKeys::maxKeyNameLength) << setfill(' ')
+								<< ((keyName != keys.keyCodes.end()) ? keyName->second : "???"s) << rightDelim
+								<< hex << setw(2) << setfill('0') << (u_int)byte;
 					}
-
-					auto keyName = keys.keyCodes.find(scanCode);
-
-					cout << ' '
-							<< leftDelim << setw(USBKeys::maxKeyNameLength) << setfill(' ')
-							<< ((keyName != keys.keyCodes.end()) ? keyName->second : "???"s) << rightDelim
-							<< hex << setw(2) << setfill('0') << (u_int)byte;
 
 					++addr;
 				}

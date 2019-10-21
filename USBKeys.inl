@@ -47,33 +47,42 @@ public:
 
 				u_int scanCode;
 				hidKeysFile >> std::hex >> scanCode;
-				if (keyCodes.find(scanCode) != keyCodes.end())
-				{
-					std::cerr << "Already have a scancode for " << scanCode << ": " << keyCodes.at(scanCode) << std::endl;
-					continue;
-				}
-
-				keyCodes[scanCode] = keyName;
-
-				//std::clog << keyName << scanCode << std::endl;
-				if (keyNames.find(keyName) != keyNames.end())
-				{
-					if (verbose)
-						std::cerr << "Already have a name for " << keyName << ": " << std::hex << (u_int)keyNames.at(keyName) << std::endl;
-					continue;
-				}
-
-				keyNames[keyName] = scanCode;
+				AddKey(keyName, scanCode);
 			}
 
 			char restOfLine[1024];
 			hidKeysFile.getline(restOfLine, std::size(restOfLine));
 		}
+
+		AddKey("EJECT", 0xfc, true);
+		AddKey("FN", 0xf8, true);
 	}
 
 	static constexpr size_t maxKeyNameLength = 7;
 	std::unordered_map<std::string, u_char> keyNames;
 	std::unordered_map<u_char, std::string> keyCodes;
+
+private:
+	void AddKey(const std::string &keyName, u_char scanCode, bool overwrite = false)
+	{
+		if (keyCodes.find(scanCode) != keyCodes.end() && !overwrite)
+		{
+			std::cerr << "Already have a scancode for " << scanCode << ": " << keyCodes.at(scanCode) << std::endl;
+			return;
+		}
+
+		keyCodes[scanCode] = keyName;
+
+		//std::clog << keyName << scanCode << std::endl;
+		if (keyNames.find(keyName) != keyNames.end() && !overwrite)
+		{
+			if (verbose)
+				std::cerr << "Already have a name for " << keyName << ": " << std::hex << (u_int)keyNames.at(keyName) << std::endl;
+			return;
+		}
+
+		keyNames[keyName] = scanCode;
+	}
 };
 
 bool USBKeys::verbose = false;

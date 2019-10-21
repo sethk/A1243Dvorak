@@ -182,6 +182,22 @@ main(int ac, char *av[])
 				if (!lineStream.eof())
 					throw runtime_error("Expected key name or hex code");
 			}
+			else if (directive == "db")
+			{
+				u_int uintChar;
+				while ((lineStream >> hex >> uintChar))
+				{
+					if (uintChar > 0xff)
+						clog << "Byte literal " << uintChar << " too large" << endl;
+
+					input[address] = uintChar;
+
+					++address;
+				}
+
+				if (!lineStream.eof())
+					throw runtime_error("Expected hex byte");
+			}
 			else if (directive == "checksum")
 				FixCheckSum(input, address);
 			else

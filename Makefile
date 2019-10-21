@@ -48,7 +48,7 @@ kbd_0x0069_0x0220.asm: kbd_0x0069_0x0220.hex kbd_0x0069_0x0220.mp $(M8CDIS)
 FindKeys: FindKeys.cc USBKeys.inl
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-kbd_0x0069_0x0220.keys: kbd_0x0069_0x0220.hex FindKeys
+%.keys: %.hex FindKeys
 	./FindKeys < $< > $@ || (rm -f $@; false)
 
 Patch: Patch.cc USBKeys.inl HexFile.inl kbd_0x0069_0x0220.hex
@@ -59,14 +59,8 @@ kbd_0x0069_0x0220.def.hex: kbd_0x0069_0x0220.hex Patch default.patch
 	./Patch default.patch < kbd_0x0069_0x0220.hex > kbd_0x0069_0x0220.def.hex || (rm -f $@; false)
 	diff kbd_0x0069_0x0220.def.hex kbd_0x0069_0x0220.hex || (rm -f $@; false)
 
-kbd_0x0069_0x0220.def.keys: kbd_0x0069_0x0220.def.hex FindKeys
-	./FindKeys < $< > $@ || (rm -f $@; false)
-
 dvorak.hex: Patch dvorak.patch kbd_0x0069_0x0220.hex
 	./Patch dvorak.patch < kbd_0x0069_0x0220.hex > $@ || (rm -f $@; false)
-
-dvorak.keys: dvorak.hex FindKeys
-	./FindKeys < $< > $@ || (rm -f $@; false)
 
 dvorak-win.hex: Patch dvorak-win.patch kbd_0x0069_0x0220.hex
 	./Patch dvorak-win.patch < kbd_0x0069_0x0220.hex > $@ || (rm -f $@; false)

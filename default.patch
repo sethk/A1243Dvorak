@@ -1,10 +1,10 @@
-0bf4:	keys	NONE	NONE	Delete	0xfc	F13	F14	F15	End
+0bf4:	keys	NONE	NONE	Delete	Eject	F13	F14	F15	End
 0bfc:	keys	Grave	Tab	CapsLoc	102nd	Enter	F9	Esc	F12
 0c04:	keys	1	Q	A	Z	F7	F10	F1	NONE
 0c0c:	keys	2	W	S	X	F8	F11	F2	Hanja
 0c14:	keys	3	E	D	C	Equal	RightBr	F3	KPDot
 0c1c:	keys	4	R	F	V	Backspa	Backsla	F4	KP0
-0c24:	keys	5	T	G	B	0xf8	Yen	F5	Left
+0c24:	keys	5	T	G	B	Fn	Yen	F5	Left
 0c2c:	keys	6	Y	H	N	Home	Hangeul	Up	Down
 0c34:	keys	7	U	J	M	PageUp	PageDow	F6	Right
 0c3c:	keys	8	I	K	Comma	NumLock	KP7	KP4	KP1
