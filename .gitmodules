@@ -1,0 +1,3 @@
+[submodule "Vendor/m8cdis"]
+	path = Vendor/m8cdis
+	url = https://github.com/sethk/m8cdis.git

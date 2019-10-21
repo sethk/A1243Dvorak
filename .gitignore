@@ -1,3 +1,4 @@
+AlKybdFirmwareUpdate.pkg/
 HIDFirmwareUpdaterTool
 kbd_0x0069_0x0220.irrxfw
 CheckSum
@@ -6,9 +7,11 @@ Documents/
 FindKeys
 HIDFirmwareUpdaterTool.s
 HIDFirmwareUpdaterTool.hex.s
+HIDFirmwareUpdaterTool.xxd
 HIDFirmwareUpdaterTool.hacked
 HIDFirmwareUpdaterTool.hacked.s
 HIDFirmwareUpdaterTool.hacked.xxd
+HIDFirmwareUpdaterTool.hacked.tmp.xxd
 Patch
 dvorak.hex
 dvorak.irrxfw
