@@ -147,12 +147,12 @@ clean_disasm::
 	rm -f Disassembly/$(ORIG_FW).asm
 
 clean::
-	rm -f Firmware/dvorak.irrxfw Keymaas/dvorak.keys Firmware/dvorak.hex
-	rm -f dvorak-win.irrxfw dvorak-win.keys dvorak-win.hex
-	rm -f $(ORIG_FW).def.irrxfw $(ORIG_FW).def.hex $(ORIG_FW).def.keys
-	rm -f $(ORIG_FW).irrxfw $(ORIG_FW).keys $(ORIG_FW).hex
-	rm -f Patch FindKeys CheckSum Codec
-	rm -f HIDFirmwareUpdaterTool.hacked.tmp.xxd HIDFirmwareUpdaterTool.hacked HIDFirmwareUpdaterTool.hex.s
+	rm -f Firmware/dvorak.irrxfw Keymaps/dvorak.keys Firmware/dvorak.hex
+	rm -f Firmware/dvorak-win.irrxfw Keymaps/dvorak-win.keys Firmware/dvorak-win.hex
+	rm -f Firmware/$(ORIG_FW).def.irrxfw Firmware/$(ORIG_FW).def.hex Keymaps/$(ORIG_FW).def.keys
+	rm -f Firmware/$(ORIG_FW).irrxfw Keymaps/$(ORIG_FW).keys Firmware/$(ORIG_FW).hex
+	rm -f Tools/Patch Tools/FindKeys Tools/CheckSum Tools/Codec
+	rm -f Obsolete/HIDFirmwareUpdaterTool.hacked.tmp.xxd Obsolete/HIDFirmwareUpdaterTool.hacked Obsolete/HIDFirmwareUpdaterTool.s
 	rm -fr Library
 	rm -fr Packages/AlKybdFirmwareUpdate.pkg/
 	rm -f Obsolete/HIDFirmwareUpdaterTool.xxd Obsolete/HIDFirmwareUpdaterTool
