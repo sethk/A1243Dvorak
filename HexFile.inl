@@ -72,10 +72,15 @@ public:
 			return std::get<std::vector<u_char>>(data)[address];
 		}
 
+		const u_char &operator[](u_int address) const
+		{
+			return std::get<std::vector<u_char>>(data)[address];
+		}
+
 		u_char length;
 		u_int address;
 		u_char type;
-		std::variant<std::vector<u_char>, u_int> data;
+		std::variant<std::vector<u_char>, uint16_t> data;
 
 		friend std::istream &operator>>(std::istream &is, HexFile::Record &record);
 		friend std::ostream &operator<<(std::ostream &os, const HexFile::Record &record);
@@ -90,7 +95,78 @@ public:
 		throw std::out_of_range(std::string("No record at address ") + std::to_string(address));
 	}
 
+	const u_char &operator[](u_int address) const
+	{
+		for (auto &record : records)
+			if (record.address <= address && record.address + record.length > address)
+				return record[address - record.address];
+
+		throw std::out_of_range(std::string("No record at address ") + std::to_string(address));
+	}
+
 	std::vector<Record> records;
+
+	uint16_t GetStoredLowSum() const
+	{
+		return (*this)[0x1ffe] << 8 | (*this)[0x1fff];
+	}
+
+	// Checksum is 16-bit sum of bytes in this range:
+	static const uint16_t BeginSummed = 0x80, EndSummed = 0x1300;
+
+	uint16_t SumLowBlocks() const
+	{
+		uint16_t segment = 0;
+		uint16_t computedSum = 0;
+
+		for (const Record &record : records)
+		{
+			switch (record.type)
+			{
+				case 0:
+				{
+					if (segment > 0)
+						continue;
+
+					const uint16_t beginRecord = record.address, endRecord = record.address + record.length;
+
+					if (endRecord <= BeginSummed || beginRecord >= EndSummed)
+						continue;
+
+					unsigned endOffset = record.length;
+					if (endRecord > EndSummed)
+						endOffset = EndSummed - beginRecord;
+
+					unsigned beginOffset = 0;
+					if (beginRecord < BeginSummed)
+						beginOffset = BeginSummed - beginRecord;
+
+					const std::vector<uint8_t> &data = std::get<std::vector<uint8_t>>(record.data);
+					for (unsigned offset = beginOffset; offset < endOffset; ++offset)
+						computedSum+= data[offset];
+
+					break;
+				}
+
+				case 1:
+					break;
+
+				case 4:
+					segment = std::get<uint16_t>(record.data);
+					break;
+			}
+		}
+
+		return computedSum;
+	}
+
+	void UpdateLowSum()
+	{
+		uint16_t computedSum = SumLowBlocks();
+
+		(*this)[0x1ffe] = computedSum >> 8;
+		(*this)[0x1fff] = computedSum;
+	}
 
 	friend std::istream &operator>>(std::istream &, HexFile &);
 	friend std::istream &operator>>(std::istream &is, HexFile::Record &record);
@@ -124,9 +200,9 @@ std::istream &operator>>(std::istream &is, HexFile::Record &record)
 
 		case 4:
 		{
-			u_short segmentStart;
+			uint16_t segmentStart;
 			hexReader >> segmentStart;
-			record.data.emplace<u_int>(segmentStart << 8);
+			record.data.emplace<uint16_t>(segmentStart);
 			break;
 		}
 
@@ -160,7 +236,7 @@ std::ostream &operator<<(std::ostream &os, const HexFile::Record &record)
 			break;
 
 		case 4:
-			u_short shortAddress = std::get<u_int>(record.data) >> 8;
+			u_short shortAddress = std::get<uint16_t>(record.data);
 			hexWriter << shortAddress;
 			break;
 	}
@@ -174,26 +250,21 @@ std::istream &operator>>(std::istream &is, HexFile &hexFile)
 {
 	static const bool verbose = false;
 
-	u_int segmentStart = 0;
 	bool done = false;
 	do
 	{
 		HexFile::Record record;
 		if (is >> record)
 		{
-			if (verbose)
-				std::clog << "Record type " << (u_int)record.type << " at " << record.address << ", length " << (u_int)record.length << std::endl;
+			if (done)
+				throw std::runtime_error("Additional records after end record");
 
-			if (record.type == 0)
-			{
-				record.address+= segmentStart;
-				if (verbose)
-					std::clog << "New segment start " << std::hex << std::setw(6) << segmentStart << std::endl;
-			}
-			else if (record.type == 4)
-				segmentStart = record.address;
-			else if (record.type == 1)
+			if (verbose)
+				std::clog << "Record type " << (u_int)record.type << " at " << std::hex << std::setw(6) << record.address << ", length " << std::dec << (u_int)record.length << std::endl;
+
+			if (record.type == 1)
 				done = true;
+
 			hexFile.records.push_back(record);
 		}
 	}

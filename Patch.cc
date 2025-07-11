@@ -8,86 +8,6 @@
 
 using namespace std;
 
-static int
-ByteSum(const string &s)
-{
-	int hexSum = 0;
-	for (char ch : s)
-		hexSum+= ch;
-
-	return hexSum;
-}
-
-//static const u_int checkSumAddress = 0x1fc0;
-
-static HexFile::Record &
-FindCheckSumRecord(HexFile &input, u_int address)
-{
-	for (auto &record : input.records)
-	{
-		if (record.address == address)
-			return record;
-	}
-
-	throw runtime_error("Missing CheckSum record at address " + to_string(address));
-}
-
-static bool
-GenCheckSumRecord(HexFile::Record &record, size_t byteIndex, int targetCheckSum)
-{
-	for (u_int byteValue = 0; byteValue < 0x100; ++byteValue)
-	{
-		record[byteIndex] = byteValue;
-
-		ostringstream oss;
-		oss << record;
-
-		auto byteSum = ByteSum(oss.str());
-		if (byteSum == targetCheckSum)
-			return true;
-
-		if (byteIndex < record.length - 1)
-		{
-			if (GenCheckSumRecord(record, byteIndex + 1, targetCheckSum))
-				return true;
-		}
-	}
-
-	return false;
-}
-
-static void
-FixCheckSum(HexFile &input, u_int address)
-{
-	int diff;
-	{
-		ostringstream oss;
-		oss << input;
-		auto checkSum = ByteSum(oss.str());
-		diff = checkSum - 0x1057f8;
-	}
-
-	if (diff == 0)
-		return;
-
-	clog << "Fixing checksum (difference " << diff << ")" << endl;
-
-	int targetCheckSum;
-	HexFile::Record &record = FindCheckSumRecord(input, address);
-	{
-		ostringstream oss;
-		oss << record;
-		auto recordCheckSum = ByteSum(oss.str());
-		targetCheckSum = recordCheckSum - diff;
-	}
-
-	for (u_char &ch : get<vector<u_char>>(record.data))
-		ch = 0x0;
-
-	if (!GenCheckSumRecord(record, record.length - 5, targetCheckSum))
-		throw runtime_error("Could not fix checksum");
-}
-
 int
 main(int ac, char *av[])
 {
@@ -198,8 +118,6 @@ main(int ac, char *av[])
 				if (!lineStream.eof())
 					throw runtime_error("Expected hex byte");
 			}
-			else if (directive == "checksum")
-				FixCheckSum(input, address);
 			else
 				throw runtime_error("Unrecognized directive "s + directive);
 		}
@@ -212,6 +130,8 @@ main(int ac, char *av[])
 
 	if (numErrors > 0)
 		return 1;
+
+	input.UpdateLowSum();
 
 	cout << input;
 }

@@ -10,9 +10,9 @@ label rom	008c  spi_full
 label rom	0090  gpio0.Trampoline
 label rom	0094  gpio1.Trampoline
 label rom	0098  int1.Trampoline
-label rom	009c  usb_ep0.L9c
+label rom	009c  usb_ep0.Trampoline
 label rom	00a0  usb_ep1.La0
-label rom	00a4  usb_ep2.La4
+label rom	00a4  usb_ep2.Trampoline1
 label rom	00a8  usb_reset.La8
 label rom	00ac  usb_active.Lac
 label rom	00b0  msec_timer
@@ -41,7 +41,7 @@ label rom	0300 start.L300
 label rom	031d start.Inf_Loop
 label rom	031f  _start_1_2
 label rom	0324  _start_1_2.ZeroTimers
-label rom	032d  _start_1_2.CopyROM347_348_To_SRAM35_36
+label rom	032d  _start_1_2.CopyROM347_To_SRAM35
 label rom	0334  _start_1_2.L3
 label rom	0343  _start_1_2.L4
 label rom	0348  init_ctrl_regs
@@ -156,23 +156,27 @@ label rom	0b97  _unused22
 label rom	0b98  _read_row
 literal		0bbb 0c8b	_row_mask1
 label rom	0bbb		_row_mask1
-code		0c8c 1300 text2
+code		0c8c 0dfb text2
 label rom	0c8c  _unknown16
 label rom	0d51  _unknown31_copy1
 label rom	0d7c  _unknown31_copy2
 label rom	0daa  _unknown15
-label rom	1162  _verify_vects_failed
+literal		0dfb 1300 _halts
+label rom	0dfb halts
 literal		0bce 0be0	_row_mask2
 label rom	0bce  _row_mask2
 literal		0be1 0bf3 _row_mask3
 label rom	0be1  _row_mask3
 label rom	0bf4  _key_map
+label rom	1162  verify_80h_to_1300h_failed
 literal		1300 13ac lit4
 label rom	1300  __data2_begin
 label rom	136b  _apple_str2
 label rom	13ac  __data2_end
 code		13b0 1796 text_13b0
 label rom	13b0  erase_write_srom
+label rom	13dd  erase_syscall
+label rom	1404  write_syscall
 label rom 142a usb_reset.L142a
 label rom	142d  usb_ep0
 label rom	143a  usb_ep0.L143a
@@ -185,40 +189,41 @@ label rom	1461  usb_active
 label rom 146b usb_active.L146b
 label rom	146f  start.SleepEntry
 
-label rom 147f	start.Reset
-label rom 1482	start.L1482
-label rom 1491	start.L1491
+label rom 147f	start.reset
+label rom 1482	start.Check9525Mode
+label rom 1491	start.Fail9525Mode
 label rom 149c  _wait_A_gpio_ints
-label rom 14b1	start.L14b1
-label rom 14f6  start.L14f6
-label rom 1507	start.L1507
-label rom 1511	start.L1511
-label rom 151e	start.L151e
-label rom 1526  start.L1526
-label rom 152e  start.L152e
-label rom 154f	start.L154f
-label rom 156f	start.L156f
-label rom 157a	start.L157a
+label rom 14b1	start.Start0000Mode
+label rom 14f6  start.AwaitEnterCmd
+label rom 1507	start.ParseEnterCmd1
+label rom 1511	start.ParseEnterCmd2
+label rom 151e	start.invalid_cmd
+label rom 1526  start.ExecEnterCmd
+label rom 152e  start.AwaitWriteCmd
+label rom 154f	start.CmdFailed
+label rom 156f	start.Wait300hCycles
+label rom 157a	start.ClearRAM
 
-label rom 1588  _start_10
+label rom 1588  parse_cmd
+label rom 15ae  parse_cmd.non_exit_cmd
 label rom 15f1  verify_rom_block
-label rom 15da  _unknown50
-label rom 1620  _unknown61
-label rom 1650  _unknown51
-label rom 1669  verify_vects
+label rom 15da  _copy_rom_block_32b
+label rom 1620  check_msg_ordinals
+label rom 1650  check_msg_sum
+label rom 1669  verify_80h_to_1300h
 label rom 16b9  wrap_erase_write_srom
-label rom 16d3  _start_6
-label rom 171e  _start_8
-label rom 172e  _start_9
+label rom 16d3  ep2_recv_cmd
+label rom 171e  send_start_flags
+label rom 172e  send_start_flags_wait
 label rom 174f  _start_5
-label rom 1766  usb_ep1.L1766
-label rom 1771  usb_ep2.L1771
+label rom 1766  usb_ep1_ack
+label rom 1771  usb_ep2_ack
 label rom 177c  usb_reset.L177c
 label rom 1789  usb_active.L1789
-label rom 1790  usb_ep0.L1790
+label rom 1790  set_ep0_cnt_0_mode_3h_reti
 label rom 1949  _unknown54
 label rom 1a40  usb_ep0.L1a40
-label rom 1a4f  usb_ep0.L1a4f
+label rom 1a4f  set_ep0_cnt_mode_reti
 label rom 1a57	usb_ep0.L1a57
 label rom 1a65	usb_ep0.L1a65
 label rom 1a77	usb_ep0.L1a77
@@ -237,9 +242,9 @@ label rom 1b14  usb_ep0.L1b14
 label rom 1b5e  usb_ep0.L1b5e
 label rom 1b84  _unknown43
 label rom 1b91  _unused42
-label rom 1b92  _unknown36
-label rom 1b9a  _unknown55
-label rom 1ba3  _unknown45
+label rom 1b92  _unknown36_iter1
+label rom 1b9a  _unknown36_iter2
+label rom 1ba3  _read_high_short
 label rom 1bb0  _unknown44
 label rom 1bc1  _unknown56
 label rom 1bd8  _unknown46
@@ -248,14 +253,14 @@ label rom 1c3f  _unknown65
 literal		1797 179f lit_1798
 code		17a0 1830 text_13b0
 label rom	17a0 usb_ep0.L17a0
-literal		1831 1831 lit_1831
-code		1832 18b7 text_1832
+literal		1829 1831 lit_1831
+code		1832 18b1 text_1832
 label rom	1832 jump_1832
-literal		18b8 18b9 lit_18b8
-code		18ba 18cf	text_1832
+literal		18b1 18b9 lit_18b1
+code		18ba 18c8	text_1832
 label rom	18ba		label_18ba
-literal		18d0 18d1	lit_18d0
-code		18d2 1d36	lit_18d0
+literal		18c8 18d1	lit_18c8
+code		18d2 1d36	text_18d2
 label rom	18d2		label_18d2
 label rom	1a3a	usb_ep0.L1a3a
 label rom 1a3d usb_ep0.L1a3d
@@ -275,7 +280,11 @@ code		1e7a 1f34	code_1e7a
 label rom	1e7a		_start_5_1
 literal 1f34 1f36 lit5
 code 1f37 1f90 text6
-literal 1fc0 1FFF lit6
+literal 1fc0 1FFd lit6
+literal 1ffe 1fff checksum
+#
+literal 100000 10003f lit_100000
+literal 200000 200001 lit_200000
 #
 #
 #
@@ -290,18 +299,19 @@ label rom 1e9e  _start_4
 label rom 1eb7  _mask_gpio0_int
 label rom 1ec5  _start_5_2
 label rom 1ed4  _unknown7
-label rom 1ee0  _unknown35
+label rom 1ee0  get_usb_epcnt
 label rom 1ef0  get_usb_stuff
 #
 label rom 1f34  get_usb_stuff_lit1
 #
-label rom 1f37  _unknown34
+label rom 1f37  get_usb_ep_mode
 label rom 1f58  _unknown12
 label rom 1f87  disable_usb
 label rom 1f8b  enable_usb
 label rom 1f8f  noop
 #
 label rom 1fc0  data_1fc0
+label rom 1ffe	cksum
 #
 ram			0000 00F7 bss
 label ram 0000  data_95h_or_0
@@ -312,20 +322,61 @@ label ram 0002	data_20h_21h_22h
 label ram 0003	data_dh_fh_21h
 label ram 0004	data_ffh_or_0
 label ram 0005	data_f5h_or_ah
-label ram 002f  _start_2f
-label ram 0034  _timer_mask_gpio0
-label ram 0035	data_35h
-label ram 0036	data_36h
-label ram 0037	data_37h
-label ram 0038  _array4
-label ram 0047  _array3
-label ram 0052  _array2
+label ram 0006	data_06h
+label ram 0010	data_00_02_04_06
+label ram 0012	data_00
+label ram 0007	data_07h
+label ram 0022	usb_ep_flags
+label ram 0028	usb_ep1_flag
+label ram 0029	usb_ep2_flag
+#02a-2e
+label ram 002f  usb_msg0
+label ram 0030  usb_msg1 # usb_cmd
+label ram 0031  usb_msg2 # 0x00
+label ram 0032  usb_msg3 # 0x01
+label ram 0033  usb_msg4 # 0x02
+label ram 0034  usb_msg5 # 0x03
+#label ram 0032	usb_ep_index
+#label ram 0034  _timer_mask_gpio0
+label ram 0035	usb_msg6 # 0x04
+label ram 0036	usb_msg7 # 0x05
+label ram 0037	usb_msg8 # 0x06
+label ram 0038  usb_msg9 # 0x07
+label ram 0039  usb_msga # ???
+label ram 003a  usb_msgb # rom_block
+label ram 003b  usb_msgc # 0 or 1 for first or second 32 bytes
+label ram 003c  usb_msgd # first byte of payload
+label ram 003d	usb_msge
+label ram 003e	usb_msgf
+label ram 003f	usb_msg10
+label ram 0040	usb_msg11
+label ram 0041	usb_msg12
+label ram 0042	usb_msg13
+label ram 0043	usb_msg14
+label ram 0044	usb_msg15
+label ram 0045	usb_msg16
+label ram 0046	usb_msg17
+label ram 0047	usb_msg18
+label ram 0048	usb_msg19
+label ram 0049	usb_msg1a
+label ram 004a	usb_msg1b
+label ram 004b	usb_msg1c
+label ram 004c	usb_msg1d
+label ram 004d	usb_msg1e
+label ram 004e	usb_msg1f
+label ram 004f	usb_msg20
+label ram 0050	usb_msg21
+label ram 0051	usb_msg22
+label ram 0052	usb_msg23
+label ram 0053	usb_msg24
+label ram 0054	usb_msg25
+label ram 0055	usb_msg26
 label ram 0056  _key_hist
 label ram 0065	_key_mask0
 label ram 0066	_key_mask1
 label ram 0067	_key_mask2
 label ram 0068	_key_mask3
-label ram 0069	_key_mask4
+label ram 0069	_key_mask4 # End of USB payload?
 label ram 006a	_key_mask5
 label ram 006b	_key_mask6
 label ram 006c	_key_mask7
@@ -347,9 +398,14 @@ label ram 009e  _timer_9e
 label ram 009f  _timer_9f
 label ram 00a0  _timer_a0
 label ram 00a1  _timer_a1
-label ram 00c0	rom_block
+label ram 00a3	_stack
+label ram 00af	_data_af
+label ram 00b0  ep2_recv_count
+label ram 00b1	ep2_recv_count2
+label ram 00b4	_rom_src_ptr
+label ram 00b5	_rom_dest_ptr
 label ram 00b6	usb_cmd
-label ram 00b7  _start_b7
+label ram 00b7  timeout
 label ram 00b8  _start_flags
 label ram 00bb  _rom_high
 label ram 00bc  _rom_low
@@ -358,8 +414,11 @@ label ram 00b9  _cksum_high
 label ram 00ba  _cksum_low
 label ram 00be  _rom_num_blks
 label ram 00bd  _rom_num_blk_cy
+label ram 00bf	_data_bf
 label ram 08ah	_flag_8ah
 label ram 08bh	_flag_8bh
+label ram 00c0	rom_block
+label ram 00c1	stack
 label ram 08ch	_flag_8ch
 label ram 08dh	_flag_8dh
 label ram 08eh	_index_8eh

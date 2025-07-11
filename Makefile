@@ -38,7 +38,7 @@ $(ORIG_FW).irrxfw: AlKybdFirmwareUpdate.pkg/Payload
 	cp ./Library/Application\ Support/Apple/HIDFirmwareUpdater/Firmware/$(ORIG_FW).irrxfw .
 
 %.s: %
-	otool -tV -arch i386 $< > $@ || (rm -f $@; false)
+	otool -tV -d -r -I -G -function_offsets -arch i386 $< > $@ || (rm -f $@; false)
 
 %.hex.s: HIDFirmwareUpdaterTool
 	otool -tV -j $< > $@ || (rm -f $@; false)
