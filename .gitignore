@@ -1,12 +1,13 @@
 .DS_Store
 *.dSYM/
+/Documents/
 /Library/
 /Packages/AlKybdFirmwareUpdate.pkg/
 /Firmware/kbd_0x0069_0x0220.irrxfw
 /Tools/CheckSum
 /Tools/Codec
-/Documents/
 /Tools/FindKeys
+/Tools/Upload
 /Obsolete/HIDFirmwareUpdaterTool
 /Obsolete/HIDFirmwareUpdaterTool.s
 /Obsolete/HIDFirmwareUpdaterTool.hex.s

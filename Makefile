@@ -7,10 +7,7 @@ main: Firmware/dvorak.irrxfw Firmware/dvorak-win.irrxfw
 
 ORIG_FW = kbd_0x0069_0x0220
 
-all:	Obsolete/HIDFirmwareUpdaterTool.s \
-		Obsolete/HIDFirmwareUpdaterTool.hex.s \
-		Obsolete/HIDFirmwareUpdaterTool.hacked \
-		Disassembly/$(ORIG_FW).asm \
+all:	Disassembly/$(ORIG_FW).asm \
 		Keymaps/$(ORIG_FW).keys \
 		Tools/CheckSum \
 		Firmware/$(ORIG_FW).def.irrxfw \
@@ -19,6 +16,10 @@ all:	Obsolete/HIDFirmwareUpdaterTool.s \
 		Keymaps/dvorak.keys \
 		Firmware/dvorak-win.irrxfw \
 		Keymaps/dvorak-win.keys
+
+obsolete:	Obsolete/HIDFirmwareUpdaterTool.s \
+			Obsolete/HIDFirmwareUpdaterTool.hex.s \
+			Obsolete/HIDFirmwareUpdaterTool.hacked \
 
 /Volumes/Aluminum\ Keyboard\ Firmware\ Update/AlKybdFirmwareUpdate.pkg:
 	@echo "*************************"
@@ -63,8 +64,6 @@ cmp_tool:: Obsolete/HIDFirmwareUpdaterTool Obsolete/HIDFirmwareUpdaterTool.hacke
 
 Tools/%: Sources/%.cc
 	$(CXX) $(CXXFLAGS) -o $@ $<
-
-#Codec: Codec.cc
 
 %.hex: %.irrxfw Tools/Codec
 	Tools/Codec < $< > $@ || (rm -f $@; false)
@@ -122,26 +121,23 @@ $(TOOL_DIR):
 $(FW_DIR): $(TOOL_DIR)
 	sudo mkdir -v -m 755 "$@"
 
-#load_dvorak:: $(FW_DIR) Firmware/dvorak.irrxfw HIDFirmwareUpdaterTool.hacked
-	#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x220 ../../../../..$(PWD)/dvorak.irrxfw
+Tools/Upload: Sources/Upload.cc Sources/HexFile.inl Sources/Format.inl Sources/SyscallError.inl
+	$(CXX) $(CXXFLAGS) $(shell pkg-config --cflags libusb-1.0) -o $@ $< $(shell pkg-config --libs libusb-1.0)
+
+load_dvorak:: Tools/Upload Firmware/dvorak.hex
+	Tools/Upload Firmware/dvorak.hex
 
 #load_dvorak_24f:: $(FW_DIR) dvorak.irrxfw HIDFirmwareUpdaterTool.hacked
-	#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x24f ../../../../..$(PWD)/dvorak.irrxfw
+#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x24f ../../../../..$(PWD)/dvorak.irrxfw
 
-#load_dvorak_win:: $(FW_DIR) dvorak-win.irrxfw HIDFirmwareUpdaterTool.hacked
-	#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x220 ../../../../..$(PWD)/dvorak-win.irrxfw
+load_dvorak_win:: Tools/Upload Firmware/dvorak-win.hex
+	Tools/Upload Firmware/dvorak-win.hex
 
-#load_default:: $(FW_DIR) $(ORIG_FW).irrxfw HIDFirmwareUpdaterTool.hacked
-	#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x220 ../../../../..$(PWD)/$(ORIG_FW).irrxfw
+load_default:: Tools/Upload Firmware/$(ORIG_FW).hex
+	Tools/Upload Firmware/$(ORIG_FW).hex
 
 #load_default_24f:: $(FW_DIR) $(ORIG_FW).irrxfw HIDFirmwareUpdaterTool.hacked
-	#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x24f ../../../../..$(PWD)/$(ORIG_FW).irrxfw
-
-#debug_load_default::
-	#lldb HIDFirmwareUpdaterTool.hacked -- -progress -pid 0x24f ../../../../..$(PWD)/$(ORIG_FW).irrxfw
-
-#watch_log:
-	#syslog -w 0 -k Sender HIDFirmwareUpdaterTool.hacked
+#sudo ./HIDFirmwareUpdaterTool.hacked -progress -pid 0x24f ../../../../..$(PWD)/$(ORIG_FW).irrxfw
 
 clean_disasm::
 	rm -f Disassembly/$(ORIG_FW).asm
@@ -151,7 +147,7 @@ clean::
 	rm -f Firmware/dvorak-win.irrxfw Keymaps/dvorak-win.keys Firmware/dvorak-win.hex
 	rm -f Firmware/$(ORIG_FW).def.irrxfw Firmware/$(ORIG_FW).def.hex Keymaps/$(ORIG_FW).def.keys
 	rm -f Firmware/$(ORIG_FW).irrxfw Keymaps/$(ORIG_FW).keys Firmware/$(ORIG_FW).hex
-	rm -f Tools/Patch Tools/FindKeys Tools/CheckSum Tools/Codec
+	rm -f Tools/Patch Tools/FindKeys Tools/CheckSum Tools/Codec Tools/Upload
 	rm -f Obsolete/HIDFirmwareUpdaterTool.hacked.tmp.xxd Obsolete/HIDFirmwareUpdaterTool.hacked Obsolete/HIDFirmwareUpdaterTool.s
 	rm -fr Library
 	rm -fr Packages/AlKybdFirmwareUpdate.pkg/
